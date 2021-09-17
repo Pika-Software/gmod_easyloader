@@ -2,7 +2,7 @@
 EasyLoader Compact - simple way to load your addons
 
 
-## Example
+## Example (In your autorun lua file)
 ```lua
 if not EasyLoader then
     if SERVER then
