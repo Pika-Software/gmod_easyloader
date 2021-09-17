@@ -50,7 +50,7 @@ function EasyLoader.Load(dir, tag)
 
     for k, v in ipairs(fl) do
         if string_EndsWith(v, ".lua") then
-            EasyLoader.AddFile(v, dir, tag)
+            EasyLoader.Include(v, dir, tag)
         end
     end
     
