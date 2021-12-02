@@ -27,7 +27,7 @@ local MsgC = MsgC
 local type = type
 
 -- Easy Loader for Client's
-AddCSLuaFile()
+-- AddCSLuaFile()
 
 function EasyLoader:IncludeLuaCode(fileName)
     assert(type(fileName) == "string", "bad argument #1 (string expected)")
