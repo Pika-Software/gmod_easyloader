@@ -1,5 +1,5 @@
-# gmod_EasyLoader_Compact
-EasyLoader Compact - simple way to load your addons
+# gmod_easyloader
+Easy Loader - easy way to load your addons & gamemodes
 
 ## Example (In your autorun lua file)
 ```lua
