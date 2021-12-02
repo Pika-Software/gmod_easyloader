@@ -5,10 +5,10 @@ Easy Loader - easy way to load your addons & gamemodes
 ```lua
 if not EasyLoader then
     if SERVER then
-        AddCSLuaFile("easyloader/easyloader_compact.lua")
+        AddCSLuaFile("easyloader/easyloader_core.lua")
     end
 
-    include("easyloader/easyloader_compact.lua")
+    include("easyloader/easyloader_core.lua")
 end
 
 MyAddon = MyAddon or {} -- Your addon global table (You don't have to create it and just use EasyLoader.Load("path/to/your/addon/in/lua", "YourAddonName"))
