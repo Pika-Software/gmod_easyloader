@@ -1,6 +1,7 @@
 -- Easy Loader by PrikolMen#3372
 local version = 2.5
 if EasyLoader and ((EasyLoader["_VERSION"] or 0) > version) then return end
+
 EasyLoader = {
     ["_VERSION"] = version,
     ["_COLOR"] = {
