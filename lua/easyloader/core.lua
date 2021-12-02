@@ -1,14 +1,14 @@
 -- Easy Loader by PrikolMen#3372
-local version = 2.8
+local version = 3.0
 if EasyLoader and ((EasyLoader["_VERSION"] or 0) > version) then return end
 
 EasyLoader = {
     ["_VERSION"] = version,
     ["_COLOR"] = {
-        ["Text"] = Color(250, 238, 255),
-        ["Error"] = Color(202, 50, 50),
         ["Client"] = Color(255, 193, 7),
-        ["Server"] = Color(40, 192, 252)
+        ["Server"] = Color(40, 192, 252),
+        ["Text"] = Color(250, 238, 255),
+        ["Error"] = Color(202, 50, 50)
     }
 }
 
@@ -26,7 +26,7 @@ local assert = assert
 local MsgC = MsgC
 local type = type
 
-function EasyLoader:IncludeLuaCode(fileName)
+function EasyLoader:Include(fileName)
     assert(type(fileName) == "string", "bad argument #1 (string expected)")
 
     local errorHandler = debug_getregistry()[1]
@@ -72,27 +72,27 @@ function EasyLoader:BuildPath(dir, fl)
 	return (dir or "") .. (fl or "")
 end
 
-function EasyLoader:Include(dir, fl, tag)
+function EasyLoader:LoadFile(dir, fl, tag)
     local fileSide = string_lower(string_Left(fl , 3))
     local path = self:BuildPath(dir, fl)
 
     if SERVER and (fileSide == "sv_") then
-        self:IncludeLuaCode(dir .. fl)
-        self:Log(tag, fl)
-    elseif (fileSide == "sh_") then
-        if SERVER then
-            AddCSLuaFile(dir .. fl)
-        end
-
-        self:IncludeLuaCode(dir .. fl)
+        self:Include(path)
         self:Log(tag, fl)
     elseif (fileSide == "cl_") then
         if SERVER then
-            AddCSLuaFile(dir .. fl)
+            AddCSLuaFile(path)
         elseif CLIENT then
-            self:IncludeLuaCode(dir .. fl)
+            self:Include(path)
             self:Log(tag, fl)
         end
+    else
+        if SERVER then
+            AddCSLuaFile(path)
+        end
+
+        self:Include(path)
+        self:Log(tag, fl)
     end
 end
 
@@ -117,7 +117,7 @@ function EasyLoader:IsRightSide(path)
     return true
 end
 
-function EasyLoader:Load(dir, tag, depth)
+function EasyLoader:Load(dir, tag)
 	assert(type(dir) == "string", "bad argument #1 (string expected)")
 
     if (dir != "") then
@@ -132,26 +132,16 @@ function EasyLoader:Load(dir, tag, depth)
         dir = dir .. "/"
     end
 
-    local fl, folder = file_Find(dir.."*", "LUA")
-    for _, fl in ipairs(fl) do
+    local fls, fols = file_Find(dir .. "*", "LUA")
+    for _, fl in ipairs(fls) do
         if string_EndsWith(fl, ".lua") then
-            self:Include(dir, fl, tag)
+            self:LoadFile(dir, fl, tag)
         end
     end
 
-    if (depth == nil) then
-        depth = 0
-    else
-        depth = depth + 1
-    end
-
-    for _, fol in ipairs(folder) do
-        self:Load(dir .. fol, tag, depth)
+    for _, fol in ipairs(fols) do
+        self:Load(dir .. fol, tag)
         self:Log(tag, fol)
-    end
-
-    if (depth == 0) then
-        Msg("\n")
     end
 end
 
