@@ -6,11 +6,13 @@ EasyLoader = {
     ["_VERSION"] = version,
     ["_COLOR"] = {
         ["Text"] = Color(250, 238, 255),
+        ["Error"] = Color(202, 50, 50),
         ["Client"] = Color(255, 193, 7),
         ["Server"] = Color(40, 192, 252)
     }
 }
 
+local debug_getregistry = debug.getregistry
 local string_EndsWith = string.EndsWith
 local AddCSLuaFile = AddCSLuaFile
 local string_lower = string.lower
@@ -20,7 +22,34 @@ local table_Add = table.Add
 local include = include
 local ipairs = ipairs
 local unpack = unpack
+local assert = assert
 local MsgC = MsgC
+local type = type
+
+-- Easy Loader for Client's
+AddCSLuaFile()
+
+function EasyLoader:IncludeLuaCode(fileName)
+    assert(type(fileName) == "string", "bad argument #1 (string expected)")
+
+    local errorHandler = debug_getregistry()[1]
+    local lastError
+    debug_getregistry()[1] = function(err)
+        lastError = err
+        return err
+    end
+
+    local args = { include(fileName) }
+    debug_getregistry()[1] = errorHandler
+
+    if lastError then
+        self:Log(nil, "Error on including: ", self:SideColor(), fileName, "\n", self["_COLOR"]["Error"], lastError)
+        return false, lastError
+    else
+        return true, unpack(args)
+    end
+end
+
 
 function EasyLoader:SideColor()
 	return CLIENT and self["_COLOR"]["Client"] or self["_COLOR"]["Server"]
@@ -51,20 +80,20 @@ function EasyLoader:Include(dir, fl, tag)
     local path = self:BuildPath(dir, fl)
 
     if SERVER and (fileSide == "sv_") then
-        include(dir .. fl)
+        self:IncludeLuaCode(dir .. fl)
         self:Log(tag, fl)
     elseif (fileSide == "sh_") then
         if SERVER then
             AddCSLuaFile(dir .. fl)
         end
 
-        include(dir .. fl)
+        self:IncludeLuaCode(dir .. fl)
         self:Log(tag, fl)
     elseif (fileSide == "cl_") then
         if SERVER then
             AddCSLuaFile(dir .. fl)
         elseif CLIENT then
-            include(dir .. fl)
+            self:IncludeLuaCode(dir .. fl)
             self:Log(tag, fl)
         end
     end
