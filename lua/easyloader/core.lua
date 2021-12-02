@@ -1,5 +1,5 @@
 -- Easy Loader by PrikolMen#3372
-local version = 2.5
+local version = 2.8
 if EasyLoader and ((EasyLoader["_VERSION"] or 0) > version) then return end
 
 EasyLoader = {
@@ -25,9 +25,6 @@ local unpack = unpack
 local assert = assert
 local MsgC = MsgC
 local type = type
-
--- Easy Loader for Client's
--- AddCSLuaFile()
 
 function EasyLoader:IncludeLuaCode(fileName)
     assert(type(fileName) == "string", "bad argument #1 (string expected)")
@@ -158,5 +155,4 @@ function EasyLoader:Load(dir, tag, depth)
     end
 end
 
--- Return EL Object
 return EasyLoader
