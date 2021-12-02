@@ -157,3 +157,6 @@ function EasyLoader:Load(dir, tag, depth)
         Msg("\n")
     end
 end
+
+-- Return EL Object
+return EasyLoader
